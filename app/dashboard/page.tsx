@@ -22,6 +22,16 @@ type LeaderboardEntry = {
   department: string | null;
 };
 
+type LeaderboardInput = {
+  challenge_id: string;
+};
+
+type LeaderboardData = {
+  full_name: string | null;
+  department: string | null;
+  total_distance: number;
+};
+
 type Challenge = Database["public"]["Tables"]["challenges"]["Row"];
 
 function calculateTimeProgress(startDate: string, endDate: string): number {
@@ -110,9 +120,12 @@ export default async function DashboardPage() {
 
     // Get leaderboard data
     const { data: leaderboardData, error: leaderboardError } =
-      await supabase.rpc("get_challenge_leaderboard", {
+      (await supabase.rpc("get_challenge_leaderboard", {
         challenge_id: currentChallenge.id,
-      });
+      })) as {
+        data: LeaderboardData[] | null;
+        error: any;
+      };
 
     console.log("Leaderboard Query Result:", {
       leaderboardData,
@@ -120,7 +133,7 @@ export default async function DashboardPage() {
     });
 
     if (leaderboardData) {
-      leaderboard = leaderboardData.map((entry) => ({
+      leaderboard = leaderboardData.map((entry: LeaderboardData) => ({
         distance: entry.total_distance,
         name: entry.full_name,
         department: entry.department,

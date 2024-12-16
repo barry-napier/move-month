@@ -127,11 +127,11 @@ export const resetPasswordAction = async (formData: FormData) => {
   encodedRedirect("success", "/dashboard/reset-password", "Password updated");
 };
 
-export async function signOut() {
+export const signOutAction = async () => {
   const supabase = await createClient();
   await supabase.auth.signOut();
   redirect("/");
-}
+};
 
 export const updateProfileAction = async (formData: FormData) => {
   const supabase = await createClient();

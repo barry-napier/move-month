@@ -3,6 +3,7 @@ import { GeistSans } from "geist/font/sans";
 import { Providers } from "@/components/providers";
 import { MessageToast } from "@/components/message-toast";
 import { Toaster } from "@/components/ui/toaster";
+import { Suspense } from "react";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -23,7 +24,10 @@ export default function RootLayout({
     <html lang="en" className={GeistSans.className}>
       <body className="bg-background text-foreground">
         <Providers>
-          <MessageToast />
+          <Suspense>
+            <MessageToast />
+          </Suspense>
+
           {children}
         </Providers>
         <Toaster />
