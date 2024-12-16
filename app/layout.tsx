@@ -1,6 +1,8 @@
+import "@/app/globals.css";
 import { GeistSans } from "geist/font/sans";
-import { ThemeProvider } from "next-themes";
-import "./globals.css";
+import { Providers } from "@/components/providers";
+import { MessageToast } from "@/components/message-toast";
+import { Toaster } from "@/components/ui/toaster";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -8,28 +10,23 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "Next.js and Supabase Starter Kit",
-  description: "The fastest way to build apps with Next.js and Supabase",
+  title: "Move Month",
+  description: "Monthly fitness challenges for your workplace",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en" className={GeistSans.className} suppressHydrationWarning>
+    <html lang="en" className={GeistSans.className}>
       <body className="bg-background text-foreground">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <main className="min-h-screen flex flex-col items-center">
-            {children}
-          </main>
-        </ThemeProvider>
+        <Providers>
+          <MessageToast />
+          {children}
+        </Providers>
+        <Toaster />
       </body>
     </html>
   );

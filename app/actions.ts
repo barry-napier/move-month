@@ -127,11 +127,11 @@ export const resetPasswordAction = async (formData: FormData) => {
   encodedRedirect("success", "/dashboard/reset-password", "Password updated");
 };
 
-export const signOutAction = async () => {
+export async function signOut() {
   const supabase = await createClient();
   await supabase.auth.signOut();
-  return redirect("/sign-in");
-};
+  redirect("/");
+}
 
 export const updateProfileAction = async (formData: FormData) => {
   const supabase = await createClient();
@@ -172,4 +172,37 @@ export const updateProfileAction = async (formData: FormData) => {
     "/dashboard/profile",
     "Profile updated successfully"
   );
+};
+
+export const addActivity = async (formData: FormData) => {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "You must be logged in to add activities" };
+  }
+
+  const distance = parseFloat(formData.get("distance") as string);
+  const challengeId = formData.get("challengeId") as string;
+
+  if (isNaN(distance) || distance <= 0) {
+    return { error: "Please enter a valid distance" };
+  }
+
+  const { error } = await supabase.from("activities").insert({
+    user_id: user.id,
+    challenge_id: challengeId,
+    distance: distance,
+    created_at: new Date().toISOString(),
+  });
+
+  if (error) {
+    console.error("Error adding activity:", error);
+    return { error: "Failed to add activity" };
+  }
+
+  return { success: true };
 };
