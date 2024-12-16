@@ -5,14 +5,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "./card";
 import { Button } from "./button";
 import { Input } from "./input";
 import { addActivity } from "@/app/actions/activities";
-import { useToast } from "./use-toast";
 import { Label } from "./label";
 import { Calendar } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Calendar as CalendarComponent } from "./calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
+import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
 interface AddActivityFormProps {
   challengeId: string;
