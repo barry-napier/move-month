@@ -12,6 +12,7 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Calendar as CalendarComponent } from "./calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
+import { useRouter } from "next/navigation";
 
 interface AddActivityFormProps {
   challengeId: string;
@@ -33,6 +34,7 @@ export function AddActivityForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [date, setDate] = useState<Date>(new Date());
   const { toast } = useToast();
+  const router = useRouter();
 
   async function action(formData: FormData) {
     setIsSubmitting(true);
@@ -57,6 +59,8 @@ export function AddActivityForm({
         // Reset the form
         const form = document.querySelector("form") as HTMLFormElement;
         form?.reset();
+        // Force a refresh of the page data
+        router.refresh();
       }
     } catch (error) {
       toast({

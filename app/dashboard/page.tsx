@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Trophy, Medal } from "lucide-react";
 import { Database } from "../../types/database.types";
 import { AddActivityForm } from "@/components/ui/add-activity-form";
+import { unstable_noStore as noStore } from "next/cache";
 
 type ActivityWithProfile = {
   distance: number;
@@ -64,6 +65,9 @@ function formatDateRange(startDate: string, endDate: string): string {
 }
 
 export default async function DashboardPage() {
+  // Opt out of caching for the entire page
+  noStore();
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -87,24 +91,33 @@ export default async function DashboardPage() {
   let userTotal = 0;
 
   if (currentChallenge) {
+    console.log("Current Challenge:", currentChallenge);
+
     // Get user's total distance for this challenge
-    const { data: userActivities } = await supabase
+    const { data: userActivities, error: userActivitiesError } = await supabase
       .from("activities")
       .select("distance")
       .eq("challenge_id", currentChallenge.id)
       .eq("user_id", user.id);
 
+    console.log("User Activities:", { userActivities, userActivitiesError });
+
     userTotal =
       userActivities?.reduce((sum, activity) => sum + activity.distance, 0) ??
       0;
 
+    console.log("User Total:", userTotal);
+
     // Get leaderboard data
-    const { data: leaderboardData } = await supabase.rpc(
-      "get_challenge_leaderboard",
-      {
+    const { data: leaderboardData, error: leaderboardError } =
+      await supabase.rpc("get_challenge_leaderboard", {
         challenge_id: currentChallenge.id,
-      }
-    );
+      });
+
+    console.log("Leaderboard Query Result:", {
+      leaderboardData,
+      leaderboardError,
+    });
 
     if (leaderboardData) {
       leaderboard = leaderboardData.map((entry) => ({
@@ -113,6 +126,8 @@ export default async function DashboardPage() {
         department: entry.department,
       }));
     }
+
+    console.log("Processed Leaderboard:", leaderboard);
   }
 
   return (
@@ -157,8 +172,8 @@ export default async function DashboardPage() {
                   <span>
                     Leader:{" "}
                     {leaderboard && leaderboard[0]
-                      ? `${leaderboard[0].distance}`
-                      : "0"}{" "}
+                      ? `${leaderboard[0].distance.toFixed(1)}`
+                      : "0.0"}{" "}
                     / {currentChallenge.target_goal} km
                   </span>
                   <span>{currentChallenge.activity_type}</span>

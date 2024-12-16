@@ -2,6 +2,7 @@
 
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 export async function addActivity(formData: FormData) {
   const supabase = await createClient();
@@ -61,6 +62,9 @@ export async function addActivity(formData: FormData) {
     return { error: "Failed to add activity" };
   }
 
-  revalidatePath("/dashboard");
+  // Force revalidation of all dashboard routes
+  revalidatePath("/dashboard", "layout");
+  revalidatePath("/", "layout");
+
   return { success: true };
 }
