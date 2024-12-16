@@ -18,7 +18,7 @@ export default async function LandingPage() {
 
   const AuthButtons = user ? (
     <Button size="lg" asChild>
-      <Link href="/protected">
+      <Link href="/dashboard">
         <LayoutDashboard className="mr-2 h-4 w-4" />
         Go to Dashboard
       </Link>
@@ -59,7 +59,7 @@ export default async function LandingPage() {
           {user ? (
             <Link
               className="text-sm font-medium hover:underline underline-offset-4"
-              href="/protected"
+              href="/dashboard"
             >
               Dashboard
             </Link>
