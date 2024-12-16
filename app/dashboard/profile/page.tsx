@@ -7,11 +7,7 @@ import { SubmitButton } from "@/components/submit-button";
 import { updateProfileAction } from "@/app/actions";
 import { FormMessage } from "@/components/form-message";
 
-export default async function ProfilePage({
-  searchParams,
-}: {
-  searchParams: { message?: string; type?: string };
-}) {
+export default async function ProfilePage() {
   const supabase = await createClient();
   const {
     data: { user },
@@ -27,10 +23,6 @@ export default async function ProfilePage({
     .select("*")
     .eq("id", user.id)
     .single();
-
-  const message = searchParams.message
-    ? { message: searchParams.message, type: searchParams.type }
-    : null;
 
   return (
     <div className="space-y-8">
@@ -89,7 +81,6 @@ export default async function ProfilePage({
             </div>
 
             <SubmitButton>Update Profile</SubmitButton>
-            {message && <FormMessage message={message} />}
           </form>
         </CardContent>
       </Card>
