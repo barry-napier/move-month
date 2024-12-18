@@ -7,6 +7,7 @@ import { Trophy, Medal } from "lucide-react";
 import { Database } from "../../types/database.types";
 import { AddActivityForm } from "@/components/ui/add-activity-form";
 import { unstable_noStore as noStore } from "next/cache";
+import { ActivitiesList } from "@/app/components/activities-list";
 
 type ActivityWithProfile = {
   distance: number;
@@ -33,6 +34,15 @@ type LeaderboardData = {
 };
 
 type Challenge = Database["public"]["Tables"]["challenges"]["Row"];
+
+type Activity = {
+  id: string;
+  created_at: string;
+  distance: number;
+  activity_type: string;
+  challenge_id: string;
+  user_id: string;
+};
 
 function calculateTimeProgress(startDate: string, endDate: string): number {
   const start = new Date(startDate).getTime();
@@ -142,6 +152,13 @@ export default async function DashboardPage() {
 
     console.log("Processed Leaderboard:", leaderboard);
   }
+
+  // Get all activities for the user
+  const { data: userActivities } = await supabase
+    .from("activities")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
 
   return (
     <div className="space-y-8">
@@ -276,6 +293,30 @@ export default async function DashboardPage() {
                   </p>
                 )}
               </div>
+            </CardContent>
+          </Card>
+
+          {/* User Activities Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Your Activities History</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {userActivities && userActivities.length > 0 ? (
+                <ActivitiesList
+                  activities={userActivities}
+                  currentChallengeId={currentChallenge?.id}
+                />
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground mb-2">
+                    You haven't logged any activities yet.
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Start by adding an activity using the form above!
+                  </p>
+                </div>
+              )}
             </CardContent>
           </Card>
         </>
