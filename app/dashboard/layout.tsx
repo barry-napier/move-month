@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { CalendarDays, BarChart2, User, Trophy, LogOut } from "lucide-react";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
+import { signOutAction } from "@/app/actions";
 
 export default async function DashboardLayout({
   children,
@@ -55,7 +56,7 @@ export default async function DashboardLayout({
           </Link>
         </nav>
         <div className="p-4 border-t">
-          <form action="/auth/sign-out">
+          <form action={signOutAction}>
             <Button
               variant="ghost"
               className="w-full justify-start"
