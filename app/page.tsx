@@ -25,12 +25,12 @@ export default async function LandingPage() {
     </Button>
   ) : (
     <div className="flex gap-4 justify-center">
-      <Button size="lg" asChild>
+      <Button size="lg" variant="secondary" asChild>
         <Link href="/sign-up">
           Get Started <ArrowRight className="ml-2 h-4 w-4" />
         </Link>
       </Button>
-      <Button size="lg" variant="outline" asChild>
+      <Button size="lg" variant="outline" className="bg-background" asChild>
         <Link href="/sign-in">Sign In</Link>
       </Button>
     </div>
