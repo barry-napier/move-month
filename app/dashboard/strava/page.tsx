@@ -59,16 +59,9 @@ function getErrorMessage(error: string, details?: string): string {
   return "An unknown error occurred. Please try again.";
 }
 
-export default async function StravaPage({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined };
-}) {
+export default async function StravaPage() {
   const activities = await getActivities();
   const hasActivities = activities && activities.length > 0;
-  const error = (await searchParams.error) as string | undefined;
-  const details = (await searchParams.details) as string | undefined;
-  const message = (await searchParams.message) as string | undefined;
 
   return (
     <div className="container mx-auto py-10">
@@ -78,26 +71,6 @@ export default async function StravaPage({
           {hasActivities && <SyncStravaButton />}
         </CardHeader>
         <CardContent className="flex flex-col items-center gap-6">
-          {error && (
-            <Alert variant="destructive" className="mb-4">
-              <AlertCircle className="h-4 w-4" />
-              <AlertTitle>Error connecting to Strava</AlertTitle>
-              <AlertDescription>
-                {getErrorMessage(error, details)}
-              </AlertDescription>
-            </Alert>
-          )}
-
-          {message === "activities_synced" && (
-            <Alert className="mb-4">
-              <CheckCircle2 className="h-4 w-4" />
-              <AlertTitle>Success</AlertTitle>
-              <AlertDescription>
-                Successfully connected to Strava and synced your activities.
-              </AlertDescription>
-            </Alert>
-          )}
-
           {!hasActivities ? (
             <>
               <p className="text-muted-foreground">
